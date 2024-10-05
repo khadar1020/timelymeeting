@@ -1,3 +1,7 @@
+# **Check Out Live**
+
+https://timelymeet.vercel.app/
+
 # **TimelyMeet**
 
 TimelyMeet is a responsive web application designed to streamline scheduling and appointment booking. It integrates Google Calendar API, Prisma for the database, and Clerk for authentication, allowing users to create events, share event links, and check available times for convenient scheduling.
