@@ -19,10 +19,35 @@ export async function getUserMeetings(type = "upcoming") {
   }
 
   const now = new Date();
+  const disputeCutoff = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+  await db.booking.updateMany({
+    where: {
+      userId: user.id,
+      status: "CONFIRMED",
+      endTime: { lt: now },
+      event: { isPaid: true },
+    },
+    data: { status: "AWAITING_CONFIRMATION" },
+  });
+
+  await db.booking.updateMany({
+    where: {
+      userId: user.id,
+      status: "AWAITING_CONFIRMATION",
+      endTime: { lt: disputeCutoff },
+      event: { isPaid: true },
+    },
+    data: {
+      status: "COMPLETED",
+      completedAt: now,
+    },
+  });
 
   const meetings = await db.booking.findMany({
     where: {
       userId: user.id,
+      status: { notIn: ["CANCELLED", "REFUNDED"] },
       startTime: type === "upcoming" ? { gte: now } : { lt: now },
     },
     include: {
@@ -81,18 +106,120 @@ export async function cancelMeeting(meetingId) {
 
   const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
-  try {
-    await calendar.events.delete({
-      calendarId: "primary",
-      eventId: meeting.googleEventId,
-    });
-  } catch (error) {
-    console.error("Failed to delete event from Google Calendar:", error);
+  if (meeting.googleEventId) {
+    try {
+      await calendar.events.delete({
+        calendarId: "primary",
+        eventId: meeting.googleEventId,
+      });
+    } catch (error) {
+      console.error("Failed to delete event from Google Calendar:", error);
+    }
   }
 
-  // Delete the meeting from the database
-  await db.booking.delete({
+  await db.booking.update({
     where: { id: meetingId },
+    data: { status: "CANCELLED" },
+  });
+
+  return { success: true };
+}
+
+export async function markMeetingCompleted(meetingId) {
+  const { userId } = auth();
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+
+  const user = await db.user.findUnique({
+    where: { clerkUserId: userId },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const meeting = await db.booking.findUnique({
+    where: { id: meetingId },
+  });
+
+  if (!meeting || meeting.userId !== user.id) {
+    throw new Error("Meeting not found or unauthorized");
+  }
+
+  if (meeting.status === "DISPUTED") {
+    throw new Error("Disputed meetings cannot be marked completed");
+  }
+
+  await db.booking.update({
+    where: { id: meetingId },
+    data: {
+      status: "COMPLETED",
+      completedAt: new Date(),
+    },
+  });
+
+  return { success: true };
+}
+
+export async function reportMeetingIssue(meetingId) {
+  const { userId } = auth();
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+
+  const user = await db.user.findUnique({
+    where: { clerkUserId: userId },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const meeting = await db.booking.findUnique({
+    where: { id: meetingId },
+  });
+
+  if (!meeting || meeting.userId !== user.id) {
+    throw new Error("Meeting not found or unauthorized");
+  }
+
+  await db.booking.update({
+    where: { id: meetingId },
+    data: {
+      status: "DISPUTED",
+      disputedAt: new Date(),
+    },
+  });
+
+  return { success: true };
+}
+
+export async function markMeetingRefunded(meetingId) {
+  const { userId } = auth();
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+
+  const user = await db.user.findUnique({
+    where: { clerkUserId: userId },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const meeting = await db.booking.findUnique({
+    where: { id: meetingId },
+  });
+
+  if (!meeting || meeting.userId !== user.id) {
+    throw new Error("Meeting not found or unauthorized");
+  }
+
+  await db.booking.update({
+    where: { id: meetingId },
+    data: { status: "REFUNDED" },
   });
 
   return { success: true };

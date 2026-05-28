@@ -1,5 +1,6 @@
 import { Calendar, Clock } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { formatAmount } from "@/lib/format";
 
 export default function EventDetails({ event }) {
   const { user } = event;
@@ -24,6 +25,9 @@ export default function EventDetails({ event }) {
         <Calendar className="mr-2" />
         <span>Google Meet</span>
       </div>
+      <p className="mb-4 font-semibold text-blue-600">
+        {event.isPaid ? formatAmount(event.price, event.currency) : "Free"}
+      </p>
       <p className="text-gray-700">{event.description}</p>
     </div>
   );

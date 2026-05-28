@@ -12,10 +12,13 @@ import { createBooking } from "@/actions/bookings";
 import { bookingSchema } from "@/app/lib/validators";
 import "react-day-picker/style.css";
 import useFetch from "@/hooks/use-fetch";
+import { formatAmount } from "@/lib/format";
 
 export default function BookingForm({ event, availability }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
+  const [checkoutError, setCheckoutError] = useState(null);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   const {
     register,
@@ -24,6 +27,9 @@ export default function BookingForm({ event, availability }) {
     setValue,
   } = useForm({
     resolver: zodResolver(bookingSchema),
+    defaultValues: {
+      eventId: event.id,
+    },
   });
 
   useEffect(() => {
@@ -41,7 +47,7 @@ export default function BookingForm({ event, availability }) {
   const { loading, data, fn: fnCreateBooking } = useFetch(createBooking);
 
   const onSubmit = async (data) => {
-    console.log("Form submitted with data:", data);
+    setCheckoutError(null);
 
     if (!selectedDate || !selectedTime) {
       console.error("Date or time not selected");
@@ -62,7 +68,40 @@ export default function BookingForm({ event, availability }) {
       additionalInfo: data.additionalInfo,
     };
 
-    await fnCreateBooking(bookingData);
+    if (!event.isPaid) {
+      await fnCreateBooking(bookingData);
+      return;
+    }
+
+    try {
+      setCheckoutLoading(true);
+      const response = await fetch("/api/stripe/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          eventId: event.id,
+          name: data.name,
+          email: data.email,
+          date: format(selectedDate, "yyyy-MM-dd"),
+          time: selectedTime,
+          additionalInfo: data.additionalInfo,
+        }),
+      });
+
+      const checkoutData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(checkoutData.error || "Unable to start checkout");
+      }
+
+      window.location.href = checkoutData.url;
+    } catch (error) {
+      setCheckoutError(error.message);
+    } finally {
+      setCheckoutLoading(false);
+    }
   };
 
   const availableDays = availability.map((day) => new Date(day.date));
@@ -96,6 +135,17 @@ export default function BookingForm({ event, availability }) {
 
   return (
     <div className="flex flex-col gap-8 p-10 border bg-white">
+      {event.isPaid && (
+        <div className="rounded-md border border-blue-100 bg-blue-50 p-4 text-sm text-gray-700">
+          <p className="font-semibold text-blue-700">
+            Paid event: {formatAmount(event.price, event.currency)}
+          </p>
+          <p className="mt-2">
+            Full refund if the mentor cancels or does not attend. Student
+            issues must be reported within 24 hours after the meeting.
+          </p>
+        </div>
+      )}
       <div className="md:h-96 flex flex-col md:flex-row gap-5 ">
         <div className="w-full">
           <DayPicker
@@ -140,6 +190,7 @@ export default function BookingForm({ event, availability }) {
       {selectedTime && (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
+            <input type="hidden" {...register("eventId")} />
             <Input {...register("name")} placeholder="Your Name" />
             {errors.name && (
               <p className="text-red-500 text-sm">{errors.name.message}</p>
@@ -161,9 +212,22 @@ export default function BookingForm({ event, availability }) {
               placeholder="Additional Information"
             />
           </div>
-          <Button type="submit" disabled={loading} className="w-full">
-            {loading ? "Scheduling..." : "Schedule Event"}
+          <Button
+            type="submit"
+            disabled={loading || checkoutLoading}
+            className="w-full"
+          >
+            {loading || checkoutLoading
+              ? event.isPaid
+                ? "Opening checkout..."
+                : "Scheduling..."
+              : event.isPaid
+                ? `Pay ${formatAmount(event.price, event.currency)} and Schedule`
+                : "Schedule Event"}
           </Button>
+          {checkoutError && (
+            <p className="text-red-500 text-sm">{checkoutError}</p>
+          )}
         </form>
       )}
     </div>

@@ -24,6 +24,8 @@ export async function createEvent(data) {
   const event = await db.event.create({
     data: {
       ...validatedData,
+      price: validatedData.isPaid ? validatedData.price : null,
+      currency: validatedData.currency.toLowerCase(),
       userId: user.id,
     },
   });

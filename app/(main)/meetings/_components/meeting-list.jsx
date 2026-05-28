@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/card";
 import { Calendar, Clock, Video } from "lucide-react";
 import CancelMeetingButton from "./cancel-meeting";
+import MeetingActions from "./meeting-actions";
+import { formatAmount } from "@/lib/format";
 
 export default function MeetingList({ meetings, type }) {
   if (meetings.length === 0) {
@@ -22,6 +24,18 @@ export default function MeetingList({ meetings, type }) {
           <CardHeader>
             <CardTitle>{meeting.event.title}</CardTitle>
             <CardDescription>with {meeting.name}</CardDescription>
+            <CardDescription>
+              Status: {meeting.status.replaceAll("_", " ").toLowerCase()}
+            </CardDescription>
+            {meeting.event.isPaid && (
+              <CardDescription>
+                Paid:{" "}
+                {formatAmount(
+                  meeting.amountPaid || meeting.event.price,
+                  meeting.currency || meeting.event.currency
+                )}
+              </CardDescription>
+            )}
             <CardDescription>
               &quot;{meeting.additionalInfo}&quot;
             </CardDescription>
@@ -57,6 +71,13 @@ export default function MeetingList({ meetings, type }) {
               <CancelMeetingButton meetingId={meeting.id} />
             </CardFooter>
           )}
+          {type === "past" &&
+            meeting.event.isPaid &&
+            ["AWAITING_CONFIRMATION", "DISPUTED"].includes(meeting.status) && (
+              <CardFooter>
+                <MeetingActions meetingId={meeting.id} status={meeting.status} />
+              </CardFooter>
+            )}
         </Card>
       ))}
     </div>

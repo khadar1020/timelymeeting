@@ -36,6 +36,9 @@ model Event {
   user        User     @relation("UserEvents", fields: [userId], references: [id])
   bookings    Booking[]
   isPrivate   Boolean  @default(true)
+  isPaid      Boolean  @default(false)
+  price       Int?
+  currency    String   @default("inr")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -51,8 +54,16 @@ model Booking {
   additionalInfo String?  // Optional additional information from the person booking
   startTime      DateTime
   endTime        DateTime
-  meetLink       String  // Google Meet link for the booking
-  googleEventId  String
+  meetLink       String?  // Google Meet link for the booking
+  googleEventId  String?
+  status         BookingStatus @default(CONFIRMED)
+  stripeSessionId String? @unique
+  stripePaymentIntentId String?
+  amountPaid     Int?
+  currency       String?
+  paidAt         DateTime?
+  disputedAt     DateTime?
+  completedAt    DateTime?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
@@ -88,4 +99,14 @@ enum DayOfWeek {
   FRIDAY
   SATURDAY
   SUNDAY
+}
+
+enum BookingStatus {
+  PENDING_PAYMENT
+  CONFIRMED
+  AWAITING_CONFIRMATION
+  COMPLETED
+  DISPUTED
+  CANCELLED
+  REFUNDED
 }

@@ -14,10 +14,12 @@ import useFetch from "@/hooks/use-fetch";
 import { Link, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { formatAmount } from "@/lib/format";
 
 export default function EventCard({ event, username, isPublic = false }) {
   const [isCopied, setIsCopied] = useState(false);
   const router = useRouter();
+  const description = event.description || "";
 
   const handleCopy = async () => {
     try {
@@ -62,9 +64,18 @@ export default function EventCard({ event, username, isPublic = false }) {
           </span>
           <span>{event._count.bookings} Bookings</span>
         </CardDescription>
+        <CardDescription>
+          {event.isPaid
+            ? formatAmount(event.price, event.currency)
+            : "Free event"}
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <p>{event.description.substring(0, event.description.indexOf("."))}.</p>
+        <p>
+          {description.includes(".")
+            ? `${description.substring(0, description.indexOf("."))}.`
+            : description}
+        </p>
       </CardContent>
       {!isPublic && (
         <CardFooter className="flex gap-2">

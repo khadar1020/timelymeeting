@@ -133,6 +133,11 @@ export async function getEventAvailability(eventId) {
             },
           },
           bookings: {
+            where: {
+              status: {
+                in: ["CONFIRMED", "AWAITING_CONFIRMATION", "COMPLETED"],
+              },
+            },
             select: {
               startTime: true,
               endTime: true,

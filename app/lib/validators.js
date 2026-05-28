@@ -53,9 +53,24 @@ export const eventSchema = z.object({
   duration: z.number().int().positive("Duration must be a positive number"),
 
   isPrivate: z.boolean(),
-});
+  isPaid: z.boolean(),
+  price: z.number().int().min(0).optional(),
+  currency: z.string().min(3).max(3),
+}).refine(
+  (data) => {
+    if (data.isPaid) {
+      return data.price && data.price > 0;
+    }
+    return true;
+  },
+  {
+    message: "Price is required for paid events",
+    path: ["price"],
+  }
+);
 
 export const bookingSchema = z.object({
+  eventId: z.string().min(1, "Event is required"),
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email"),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),

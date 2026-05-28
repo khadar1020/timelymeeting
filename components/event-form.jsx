@@ -22,6 +22,7 @@ const EventForm = ({ onSubmitForm, initialData = {} }) => {
     register,
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(eventSchema),
@@ -30,13 +31,21 @@ const EventForm = ({ onSubmitForm, initialData = {} }) => {
       description: initialData.description || "",
       duration: initialData.duration || 30,
       isPrivate: initialData.isPrivate ?? true,
+      isPaid: initialData.isPaid ?? false,
+      price: initialData.price ? initialData.price / 100 : 0,
+      currency: initialData.currency || "inr",
     },
   });
 
   const { loading, error, fn: fnCreateEvent } = useFetch(createEvent);
+  const isPaid = watch("isPaid");
 
   const onSubmit = async (data) => {
-    await fnCreateEvent(data);
+    await fnCreateEvent({
+      ...data,
+      price: data.isPaid ? Math.round(data.price * 100) : undefined,
+      currency: data.currency.toLowerCase(),
+    });
     if (!loading && !error) onSubmitForm();
     router.refresh(); // Refresh the page to show updated data
   };
@@ -129,6 +138,84 @@ const EventForm = ({ onSubmitForm, initialData = {} }) => {
           )}
         />
       </div>
+
+      <div>
+        <label
+          htmlFor="isPaid"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Payment
+        </label>
+        <Controller
+          name="isPaid"
+          control={control}
+          render={({ field }) => (
+            <Select
+              onValueChange={(value) => field.onChange(value === "true")}
+              value={field.value ? "true" : "false"}
+            >
+              <SelectTrigger className="mt-1">
+                <SelectValue placeholder="Select payment type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="false">Free</SelectItem>
+                <SelectItem value="true">Paid</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+        />
+      </div>
+
+      {isPaid && (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div>
+            <label
+              htmlFor="price"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Price
+            </label>
+            <Input
+              id="price"
+              {...register("price", {
+                valueAsNumber: true,
+              })}
+              type="number"
+              min="1"
+              step="0.01"
+              className="mt-1"
+            />
+            {errors.price && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.price.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="currency"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Currency
+            </label>
+            <Controller
+              name="currency"
+              control={control}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Select currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="inr">INR</SelectItem>
+                    <SelectItem value="usd">USD</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+        </div>
+      )}
 
       {error && <p className="text-red-500 text-xs mt-1">{error.message}</p>}
 
