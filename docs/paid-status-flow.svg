@@ -53,13 +53,13 @@
   <text x="985" y="673" text-anchor="middle" class="box-text">Admin / mentor</text>
   <text x="985" y="697" text-anchor="middle" class="box-text">reviews manually</text>
 
-  <path d="M985 450L1145 515L985 580L825 515Z" class="decision" fill="#FFF4E5"/>
-  <text x="985" y="502" text-anchor="middle" class="box-text">Refund completed</text>
-  <text x="985" y="526" text-anchor="middle" class="box-text">in Stripe?</text>
+  <path d="M1035 450L1195 515L1035 580L875 515Z" class="decision" fill="#FFF4E5"/>
+  <text x="1035" y="502" text-anchor="middle" class="box-text">Refund completed</text>
+  <text x="1035" y="526" text-anchor="middle" class="box-text">in Stripe?</text>
 
-  <rect x="1010" y="300" width="230" height="76" class="box" fill="#DEEBFF"/>
-  <text x="1125" y="333" text-anchor="middle" class="box-text">Booking status</text>
-  <text x="1125" y="357" text-anchor="middle" class="box-text">REFUNDED</text>
+  <rect x="1040" y="300" width="230" height="76" class="box" fill="#DEEBFF"/>
+  <text x="1155" y="333" text-anchor="middle" class="box-text">Booking status</text>
+  <text x="1155" y="357" text-anchor="middle" class="box-text">REFUNDED</text>
 
   <rect x="820" y="300" width="150" height="76" class="box" fill="#F4F5F7"/>
   <text x="895" y="333" text-anchor="middle" class="box-text">Keep</text>
@@ -74,9 +74,9 @@
   <path class="line" d="M655 575V638"/>
   <text x="670" y="612" class="label">Yes</text>
   <path class="line" d="M760 678H848"/>
-  <path class="line" d="M985 640V582"/>
-  <path class="line" d="M1060 470L1120 378"/>
-  <text x="1112" y="428" class="label">Yes</text>
-  <path class="line" d="M905 470L895 378"/>
-  <text x="850" y="428" class="label">No</text>
+  <path class="line" d="M985 640V600H1035V582"/>
+  <path class="line" d="M1115 470L1150 378"/>
+  <text x="1160" y="428" class="label">Yes</text>
+  <path class="line" d="M955 470L895 378"/>
+  <text x="882" y="428" class="label">No</text>
 </svg>
