@@ -14,7 +14,7 @@ export async function updateUsername(username) {
     where: { username },
   });
 
-  if (existingUser && existingUser.id !== userId) {
+  if (existingUser && existingUser.clerkUserId !== userId) {
     throw new Error("Username is already taken");
   }
 

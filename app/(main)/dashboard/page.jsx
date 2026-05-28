@@ -16,6 +16,8 @@ import { format } from "date-fns";
 
 export default function DashboardPage() {
   const { user, isLoaded } = useUser();
+  const origin =
+    typeof window !== "undefined" ? window.location.origin : "";
 
   const {
     register,
@@ -39,7 +41,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     (async () => await fnUpdates())();
-  }, []);
+  }, [fnUpdates]);
 
   const { loading, error, fn: fnUpdateUsername } = useFetch(updateUsername);
 
@@ -89,7 +91,7 @@ export default function DashboardPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <div className="flex items-center gap-2">
-                <span>{window?.location.origin}/</span>
+                <span>{origin}/</span>
                 <Input {...register("username")} placeholder="username" />
               </div>
               {errors.username && (
