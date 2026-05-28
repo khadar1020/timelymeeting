@@ -1,0 +1,112 @@
+<svg width="1400" height="980" viewBox="0 0 1400 980" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M1.5 1.5L7 4L1.5 6.5" stroke="#7A869A" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#172B4D" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .title{font:700 32px Arial, sans-serif;fill:#172B4D}
+      .box-text{font:600 18px Arial, sans-serif;fill:#172B4D}
+      .small{font:600 15px Arial, sans-serif;fill:#5E6C84}
+      .label{font:700 15px Arial, sans-serif;fill:#42526E}
+      .line{stroke:#7A869A;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+      .box{stroke:#42526E;stroke-width:2.2;rx:16;filter:url(#shadow)}
+      .decision{stroke:#42526E;stroke-width:2.2;filter:url(#shadow)}
+    </style>
+  </defs>
+
+  <rect width="1400" height="980" fill="#F7FAFC"/>
+  <text x="54" y="64" class="title">TimelyMeet Project Flow</text>
+
+  <rect x="80" y="120" width="210" height="76" class="box" fill="#E3FCEF"/>
+  <text x="185" y="153" text-anchor="middle" class="box-text">User visits</text>
+  <text x="185" y="177" text-anchor="middle" class="box-text">TimelyMeet</text>
+
+  <path d="M430 118L540 158L430 198L320 158Z" class="decision" fill="#FFF4E5"/>
+  <text x="430" y="153" text-anchor="middle" class="box-text">Signed in?</text>
+  <text x="430" y="176" text-anchor="middle" class="small">Clerk session</text>
+
+  <rect x="605" y="60" width="230" height="76" class="box" fill="#EAE6FF"/>
+  <text x="720" y="93" text-anchor="middle" class="box-text">Clerk sign-in</text>
+  <text x="720" y="117" text-anchor="middle" class="box-text">or sign-up</text>
+
+  <rect x="605" y="180" width="230" height="76" class="box" fill="#DEEBFF"/>
+  <text x="720" y="213" text-anchor="middle" class="box-text">Create or load</text>
+  <text x="720" y="237" text-anchor="middle" class="box-text">user profile</text>
+
+  <rect x="910" y="180" width="210" height="76" class="box" fill="#E3FCEF"/>
+  <text x="1015" y="225" text-anchor="middle" class="box-text">Dashboard</text>
+
+  <rect x="805" y="330" width="220" height="76" class="box" fill="#E6FCFF"/>
+  <text x="915" y="363" text-anchor="middle" class="box-text">Set weekly</text>
+  <text x="915" y="387" text-anchor="middle" class="box-text">availability</text>
+
+  <rect x="1080" y="330" width="200" height="76" class="box" fill="#E3FCEF"/>
+  <text x="1180" y="375" text-anchor="middle" class="box-text">Create event</text>
+
+  <path d="M1180 470L1300 520L1180 570L1060 520Z" class="decision" fill="#FFF4E5"/>
+  <text x="1180" y="515" text-anchor="middle" class="box-text">Free or paid?</text>
+  <text x="1180" y="540" text-anchor="middle" class="small">Event pricing</text>
+
+  <rect x="850" y="620" width="210" height="76" class="box" fill="#E3FCEF"/>
+  <text x="955" y="653" text-anchor="middle" class="box-text">Save free</text>
+  <text x="955" y="677" text-anchor="middle" class="box-text">event</text>
+
+  <rect x="1130" y="620" width="230" height="76" class="box" fill="#FFE2E2"/>
+  <text x="1245" y="653" text-anchor="middle" class="box-text">Save price</text>
+  <text x="1245" y="677" text-anchor="middle" class="box-text">and currency</text>
+
+  <rect x="980" y="770" width="250" height="76" class="box" fill="#DEEBFF"/>
+  <text x="1105" y="803" text-anchor="middle" class="box-text">Share public</text>
+  <text x="1105" y="827" text-anchor="middle" class="box-text">booking link</text>
+
+  <rect x="620" y="770" width="240" height="76" class="box" fill="#EAE6FF"/>
+  <text x="740" y="803" text-anchor="middle" class="box-text">Booker opens</text>
+  <text x="740" y="827" text-anchor="middle" class="box-text">event page</text>
+
+  <rect x="330" y="770" width="230" height="76" class="box" fill="#E6FCFF"/>
+  <text x="445" y="803" text-anchor="middle" class="box-text">Booker selects</text>
+  <text x="445" y="827" text-anchor="middle" class="box-text">date and time</text>
+
+  <path d="M170 760L290 808L170 856L50 808Z" class="decision" fill="#FFF4E5"/>
+  <text x="170" y="803" text-anchor="middle" class="box-text">Event is paid?</text>
+  <text x="170" y="828" text-anchor="middle" class="small">At booking</text>
+
+  <rect x="70" y="600" width="260" height="82" class="box" fill="#E3FCEF"/>
+  <text x="200" y="633" text-anchor="middle" class="box-text">Create Google</text>
+  <text x="200" y="657" text-anchor="middle" class="box-text">Calendar + Meet</text>
+
+  <rect x="395" y="600" width="230" height="82" class="box" fill="#DEEBFF"/>
+  <text x="510" y="633" text-anchor="middle" class="box-text">Save confirmed</text>
+  <text x="510" y="657" text-anchor="middle" class="box-text">booking</text>
+
+  <rect x="70" y="895" width="260" height="58" class="box" fill="#FFE2E2"/>
+  <text x="200" y="930" text-anchor="middle" class="box-text">Redirect to Stripe Checkout</text>
+
+  <path class="line" d="M290 158H318"/>
+  <path class="line" d="M540 158H590V98H604"/>
+  <text x="565" y="141" class="label">No</text>
+  <path class="line" d="M540 158H590V218H604"/>
+  <text x="565" y="182" class="label">Yes</text>
+  <path class="line" d="M720 136V178"/>
+  <path class="line" d="M835 218H908"/>
+  <path class="line" d="M1015 256V310H915V328"/>
+  <path class="line" d="M1015 256V310H1180V328"/>
+  <path class="line" d="M1180 406V468"/>
+  <path class="line" d="M1115 548L975 618"/>
+  <text x="1012" y="580" class="label">Free</text>
+  <path class="line" d="M1225 553L1240 618"/>
+  <text x="1262" y="592" class="label">Paid</text>
+  <path class="line" d="M955 696V735H1105V768"/>
+  <path class="line" d="M1245 696V735H1105V768"/>
+  <path class="line" d="M980 808H862"/>
+  <path class="line" d="M620 808H562"/>
+  <path class="line" d="M330 808H292"/>
+  <path class="line" d="M170 760V684"/>
+  <text x="185" y="720" class="label">No</text>
+  <path class="line" d="M330 641H393"/>
+  <path class="line" d="M170 856V893"/>
+  <text x="185" y="880" class="label">Yes</text>
+</svg>

@@ -1,0 +1,82 @@
+<svg width="1300" height="820" viewBox="0 0 1300 820" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M1.5 1.5L7 4L1.5 6.5" stroke="#7A869A" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#172B4D" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .title{font:700 32px Arial, sans-serif;fill:#172B4D}
+      .box-text{font:600 18px Arial, sans-serif;fill:#172B4D}
+      .small{font:600 15px Arial, sans-serif;fill:#5E6C84}
+      .label{font:700 15px Arial, sans-serif;fill:#42526E}
+      .line{stroke:#7A869A;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+      .box{stroke:#42526E;stroke-width:2.2;rx:16;filter:url(#shadow)}
+      .decision{stroke:#42526E;stroke-width:2.2;filter:url(#shadow)}
+    </style>
+  </defs>
+
+  <rect width="1300" height="820" fill="#F7FAFC"/>
+  <text x="54" y="64" class="title">Paid Meeting Status Flow</text>
+
+  <rect x="80" y="130" width="240" height="76" class="box" fill="#E3FCEF"/>
+  <text x="200" y="163" text-anchor="middle" class="box-text">Stripe payment</text>
+  <text x="200" y="187" text-anchor="middle" class="box-text">succeeds</text>
+
+  <rect x="400" y="130" width="260" height="76" class="box" fill="#DEEBFF"/>
+  <text x="530" y="163" text-anchor="middle" class="box-text">Booking status</text>
+  <text x="530" y="187" text-anchor="middle" class="box-text">CONFIRMED</text>
+
+  <rect x="740" y="130" width="250" height="76" class="box" fill="#E6FCFF"/>
+  <text x="865" y="163" text-anchor="middle" class="box-text">Meeting end</text>
+  <text x="865" y="187" text-anchor="middle" class="box-text">time passes</text>
+
+  <rect x="500" y="300" width="310" height="76" class="box" fill="#FFF4E5"/>
+  <text x="655" y="333" text-anchor="middle" class="box-text">Booking status</text>
+  <text x="655" y="357" text-anchor="middle" class="box-text">AWAITING_CONFIRMATION</text>
+
+  <path d="M655 455L820 515L655 575L490 515Z" class="decision" fill="#FFF4E5"/>
+  <text x="655" y="502" text-anchor="middle" class="box-text">Issue reported</text>
+  <text x="655" y="526" text-anchor="middle" class="box-text">within 24 hours?</text>
+  <text x="655" y="548" text-anchor="middle" class="small">Student action</text>
+
+  <rect x="170" y="640" width="250" height="76" class="box" fill="#E3FCEF"/>
+  <text x="295" y="673" text-anchor="middle" class="box-text">Booking status</text>
+  <text x="295" y="697" text-anchor="middle" class="box-text">COMPLETED</text>
+
+  <rect x="510" y="640" width="250" height="76" class="box" fill="#FFEBE6"/>
+  <text x="635" y="673" text-anchor="middle" class="box-text">Booking status</text>
+  <text x="635" y="697" text-anchor="middle" class="box-text">DISPUTED</text>
+
+  <rect x="850" y="640" width="270" height="76" class="box" fill="#EAE6FF"/>
+  <text x="985" y="673" text-anchor="middle" class="box-text">Admin / mentor</text>
+  <text x="985" y="697" text-anchor="middle" class="box-text">reviews manually</text>
+
+  <path d="M985 450L1145 515L985 580L825 515Z" class="decision" fill="#FFF4E5"/>
+  <text x="985" y="502" text-anchor="middle" class="box-text">Refund completed</text>
+  <text x="985" y="526" text-anchor="middle" class="box-text">in Stripe?</text>
+
+  <rect x="1010" y="300" width="230" height="76" class="box" fill="#DEEBFF"/>
+  <text x="1125" y="333" text-anchor="middle" class="box-text">Booking status</text>
+  <text x="1125" y="357" text-anchor="middle" class="box-text">REFUNDED</text>
+
+  <rect x="820" y="300" width="150" height="76" class="box" fill="#F4F5F7"/>
+  <text x="895" y="333" text-anchor="middle" class="box-text">Keep</text>
+  <text x="895" y="357" text-anchor="middle" class="box-text">DISPUTED</text>
+
+  <path class="line" d="M320 168H398"/>
+  <path class="line" d="M660 168H738"/>
+  <path class="line" d="M865 206V258H655V298"/>
+  <path class="line" d="M655 376V453"/>
+  <path class="line" d="M545 555L315 638"/>
+  <text x="410" y="604" class="label">No</text>
+  <path class="line" d="M655 575V638"/>
+  <text x="670" y="612" class="label">Yes</text>
+  <path class="line" d="M760 678H848"/>
+  <path class="line" d="M985 640V582"/>
+  <path class="line" d="M1060 470L1120 378"/>
+  <text x="1112" y="428" class="label">Yes</text>
+  <path class="line" d="M905 470L895 378"/>
+  <text x="850" y="428" class="label">No</text>
+</svg>
