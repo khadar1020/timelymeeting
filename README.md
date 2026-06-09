@@ -59,6 +59,10 @@ Paid bookings use Stripe Checkout. The app does not store card details and does 
 
 ![Paid meeting status flow](docs/paid-status-flow.svg)
 
+### **Entity Relation Ship Diagram**
+
+![Paid meeting status flow](docs/Entity-Relation-Ship-Diagram.png)
+
 ### **Payment Notes**
 
 - Stripe money goes to the platform Stripe account.
