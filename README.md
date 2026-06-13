@@ -6,6 +6,14 @@ https://timelymeet.vercel.app/
 
 TimelyMeet is a responsive web application designed to streamline scheduling and appointment booking. It integrates Google Calendar API, Prisma for the database, and Clerk for authentication, allowing users to create events, share event links, and check available times for convenient scheduling.
 
+## **What Problem It Solves**
+
+- **Students connecting with experienced people** — Anyone looking for guidance — whether for a resume review, mock interview, or career advice — can browse a professional's available slots and book a session directly. Once confirmed, an automated meeting link is sent to both parties — no back-and-forth DMs required.
+- **Event-based mentorship and group sessions** — Organizers can set up booking slots for experts and let participants self-schedule their time. Everyone gets automated confirmations, so no one has to manually coordinate or follow up.
+- **Communities and groups managing scheduled sessions** — Whether it's a club, a team, or an online community, shared booking links make it easy to organize sessions at scale without spreadsheets, forms, or message threads.
+
+---
+
 ## **Features**
 
 - **Responsive Design**: Works seamlessly on desktop and mobile devices.
