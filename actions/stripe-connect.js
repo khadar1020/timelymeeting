@@ -6,11 +6,18 @@ import { stripe } from "@/lib/stripe";
 import { getAppUrl } from "@/lib/bookings";
 import { syncConnectedAccountStatus } from "@/lib/stripe-connect";
 
-const CONNECT_DISABLED_MESSAGE =
-  "Stripe Connect payouts are currently disabled in India for this deployment. Paid booking payments are collected by the platform, and mentor payouts should be handled manually for now.";
+function getStripeConnectCountry() {
+  return (process.env.STRIPE_CONNECT_COUNTRY || "IN").toUpperCase();
+}
 
 function isStripeConnectEnabled() {
-  return process.env.STRIPE_CONNECT_ENABLED === "true";
+  return getStripeConnectCountry() === "US";
+}
+
+function getConnectDisabledMessage() {
+  const country = getStripeConnectCountry();
+
+  return `Stripe Connect payouts are currently disabled for ${country}. Paid booking payments are collected by the platform, and mentor payouts should be handled manually for now. Set STRIPE_CONNECT_COUNTRY=US to enable Connect for a supported US Stripe account.`;
 }
 
 function getSafeStripeError(error) {
@@ -61,7 +68,8 @@ export async function getStripeConnectStatus() {
         payoutsEnabled: false,
         onboardingComplete: false,
         disabled: true,
-        message: CONNECT_DISABLED_MESSAGE,
+        country: getStripeConnectCountry(),
+        message: getConnectDisabledMessage(),
       };
     }
 
@@ -105,7 +113,7 @@ export async function getStripeConnectStatus() {
 export async function createStripeConnectOnboardingLink() {
   try {
     if (!isStripeConnectEnabled()) {
-      return { error: CONNECT_DISABLED_MESSAGE };
+      return { error: getConnectDisabledMessage() };
     }
 
     if (!stripe) {
@@ -156,7 +164,7 @@ export async function createStripeConnectOnboardingLink() {
 export async function createStripeConnectDashboardLink() {
   try {
     if (!isStripeConnectEnabled()) {
-      return { error: CONNECT_DISABLED_MESSAGE };
+      return { error: getConnectDisabledMessage() };
     }
 
     if (!stripe) {

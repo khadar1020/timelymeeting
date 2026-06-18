@@ -122,7 +122,7 @@ export default function StripeConnectCard() {
           <Button
             type="button"
             variant="outline"
-            onClick={fnGetStatus}
+            onClick={() => fnGetStatus()}
             disabled={loadingStatus}
           >
             Refresh Status

@@ -74,7 +74,7 @@ Paid bookings use Stripe Checkout. The app does not store card details and does 
 ### **Payment Notes**
 
 - Stripe money goes to the platform Stripe account.
-- Mentors can connect a Stripe Express account when `STRIPE_CONNECT_ENABLED=true`.
+- Mentors can connect a Stripe Express account when `STRIPE_CONNECT_COUNTRY=US`.
 - TimelyMeet stores the platform fee and mentor payout amount when a paid booking is confirmed.
 - After a paid meeting is completed, TimelyMeet creates an idempotent Stripe transfer to the mentor's connected account.
 - In production, Stripe Connect can be disabled with manual payouts while Stripe account/country eligibility is pending.
@@ -108,7 +108,7 @@ STRIPE_SECRET_KEY=
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
 STRIPE_WEBHOOK_SECRET=
 STRIPE_PLATFORM_FEE_PERCENT=10
-STRIPE_CONNECT_ENABLED=false
+STRIPE_CONNECT_COUNTRY=IN
 NEXT_PUBLIC_APP_URL=https://timelymeet.vercel.app
 ```
 
