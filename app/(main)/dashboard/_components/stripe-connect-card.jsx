@@ -101,35 +101,33 @@ export default function StripeConnectCard() {
           )}
         </div>
 
-        {!isDisabled && (
-          <div className="flex flex-wrap gap-3">
-            <Button
-              type="button"
-              onClick={openOnboarding}
-              disabled={onboarding || openingDashboard}
-            >
-              {status?.connected ? "Continue Onboarding" : "Connect Stripe"}
-            </Button>
-            {status?.connected && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={openDashboard}
-                disabled={onboarding || openingDashboard}
-              >
-                Open Stripe Dashboard
-              </Button>
-            )}
+        <div className="flex flex-wrap gap-3">
+          <Button
+            type="button"
+            onClick={openOnboarding}
+            disabled={isDisabled || onboarding || openingDashboard}
+          >
+            {status?.connected ? "Continue Onboarding" : "Connect Stripe"}
+          </Button>
+          {status?.connected && !isDisabled && (
             <Button
               type="button"
               variant="outline"
-              onClick={fnGetStatus}
-              disabled={loadingStatus}
+              onClick={openDashboard}
+              disabled={onboarding || openingDashboard}
             >
-              Refresh Status
+              Open Stripe Dashboard
             </Button>
-          </div>
-        )}
+          )}
+          <Button
+            type="button"
+            variant="outline"
+            onClick={fnGetStatus}
+            disabled={loadingStatus}
+          >
+            Refresh Status
+          </Button>
+        </div>
 
         {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
       </CardContent>

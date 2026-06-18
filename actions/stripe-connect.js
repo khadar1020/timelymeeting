@@ -7,7 +7,7 @@ import { getAppUrl } from "@/lib/bookings";
 import { syncConnectedAccountStatus } from "@/lib/stripe-connect";
 
 const CONNECT_DISABLED_MESSAGE =
-  "Stripe Connect payouts are currently disabled for this deployment. Paid booking payments are collected by the platform, and mentor payouts should be handled manually for now.";
+  "Stripe Connect payouts are currently disabled in India for this deployment. Paid booking payments are collected by the platform, and mentor payouts should be handled manually for now.";
 
 function isStripeConnectEnabled() {
   return process.env.STRIPE_CONNECT_ENABLED === "true";
