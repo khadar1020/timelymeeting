@@ -23,9 +23,6 @@ export async function POST(request) {
         user: {
           select: {
             username: true,
-            stripeConnectedAccountId: true,
-            stripeOnboardingComplete: true,
-            stripePayoutsEnabled: true,
           },
         },
       },
@@ -35,17 +32,6 @@ export async function POST(request) {
       return NextResponse.json(
         { error: "Paid event not found" },
         { status: 404 }
-      );
-    }
-
-    if (
-      !event.user.stripeConnectedAccountId ||
-      !event.user.stripeOnboardingComplete ||
-      !event.user.stripePayoutsEnabled
-    ) {
-      return NextResponse.json(
-        { error: "This mentor is not ready to receive payouts yet" },
-        { status: 409 }
       );
     }
 

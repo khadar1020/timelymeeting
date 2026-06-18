@@ -6,6 +6,13 @@ import { stripe } from "@/lib/stripe";
 import { getAppUrl } from "@/lib/bookings";
 import { syncConnectedAccountStatus } from "@/lib/stripe-connect";
 
+const CONNECT_DISABLED_MESSAGE =
+  "Stripe Connect payouts are currently disabled for this deployment. Paid booking payments are collected by the platform, and mentor payouts should be handled manually for now.";
+
+function isStripeConnectEnabled() {
+  return process.env.STRIPE_CONNECT_ENABLED === "true";
+}
+
 function getSafeStripeError(error) {
   const message =
     error?.raw?.message ||
@@ -47,6 +54,17 @@ async function getCurrentUser() {
 
 export async function getStripeConnectStatus() {
   try {
+    if (!isStripeConnectEnabled()) {
+      return {
+        connected: false,
+        chargesEnabled: false,
+        payoutsEnabled: false,
+        onboardingComplete: false,
+        disabled: true,
+        message: CONNECT_DISABLED_MESSAGE,
+      };
+    }
+
     const user = await getCurrentUser();
 
     if (!user.stripeConnectedAccountId) {
@@ -86,6 +104,10 @@ export async function getStripeConnectStatus() {
 
 export async function createStripeConnectOnboardingLink() {
   try {
+    if (!isStripeConnectEnabled()) {
+      return { error: CONNECT_DISABLED_MESSAGE };
+    }
+
     if (!stripe) {
       throw new Error("Stripe is not configured");
     }
@@ -133,6 +155,10 @@ export async function createStripeConnectOnboardingLink() {
 
 export async function createStripeConnectDashboardLink() {
   try {
+    if (!isStripeConnectEnabled()) {
+      return { error: CONNECT_DISABLED_MESSAGE };
+    }
+
     if (!stripe) {
       throw new Error("Stripe is not configured");
     }

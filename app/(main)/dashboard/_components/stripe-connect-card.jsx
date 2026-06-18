@@ -58,6 +58,7 @@ export default function StripeConnectCard() {
   };
 
   const isReady = status?.connected && status?.onboardingComplete;
+  const isDisabled = status?.disabled;
   const errorMessage =
     status?.error ||
     onboardingResult?.error ||
@@ -74,14 +75,17 @@ export default function StripeConnectCard() {
           Stripe Connect
         </CardTitle>
         <CardDescription>
-          Connect Stripe to receive automatic payouts after paid meetings are
-          completed.
+          Manage mentor payout setup for paid meetings.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="rounded-md border bg-gray-50 p-4 text-sm">
           {loadingStatus ? (
             <p>Checking Stripe account...</p>
+          ) : isDisabled ? (
+            <p className="font-medium text-gray-700">
+              {status.message}
+            </p>
           ) : isReady ? (
             <p className="font-medium text-green-700">
               Stripe payouts are ready for paid events.
@@ -97,33 +101,35 @@ export default function StripeConnectCard() {
           )}
         </div>
 
-        <div className="flex flex-wrap gap-3">
-          <Button
-            type="button"
-            onClick={openOnboarding}
-            disabled={onboarding || openingDashboard}
-          >
-            {status?.connected ? "Continue Onboarding" : "Connect Stripe"}
-          </Button>
-          {status?.connected && (
+        {!isDisabled && (
+          <div className="flex flex-wrap gap-3">
+            <Button
+              type="button"
+              onClick={openOnboarding}
+              disabled={onboarding || openingDashboard}
+            >
+              {status?.connected ? "Continue Onboarding" : "Connect Stripe"}
+            </Button>
+            {status?.connected && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={openDashboard}
+                disabled={onboarding || openingDashboard}
+              >
+                Open Stripe Dashboard
+              </Button>
+            )}
             <Button
               type="button"
               variant="outline"
-              onClick={openDashboard}
-              disabled={onboarding || openingDashboard}
+              onClick={fnGetStatus}
+              disabled={loadingStatus}
             >
-              Open Stripe Dashboard
+              Refresh Status
             </Button>
-          )}
-          <Button
-            type="button"
-            variant="outline"
-            onClick={fnGetStatus}
-            disabled={loadingStatus}
-          >
-            Refresh Status
-          </Button>
-        </div>
+          </div>
+        )}
 
         {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
       </CardContent>
