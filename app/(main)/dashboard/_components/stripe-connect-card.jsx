@@ -25,11 +25,13 @@ export default function StripeConnectCard() {
     fn: fnGetStatus,
   } = useFetch(getStripeConnectStatus);
   const {
+    data: onboardingResult,
     loading: onboarding,
     error: onboardingError,
     fn: fnCreateOnboardingLink,
   } = useFetch(createStripeConnectOnboardingLink);
   const {
+    data: dashboardResult,
     loading: openingDashboard,
     error: dashboardError,
     fn: fnCreateDashboardLink,
@@ -56,7 +58,13 @@ export default function StripeConnectCard() {
   };
 
   const isReady = status?.connected && status?.onboardingComplete;
-  const error = statusError || onboardingError || dashboardError;
+  const errorMessage =
+    status?.error ||
+    onboardingResult?.error ||
+    dashboardResult?.error ||
+    statusError?.message ||
+    onboardingError?.message ||
+    dashboardError?.message;
 
   return (
     <Card>
@@ -117,7 +125,7 @@ export default function StripeConnectCard() {
           </Button>
         </div>
 
-        {error && <p className="text-sm text-red-500">{error.message}</p>}
+        {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
       </CardContent>
     </Card>
   );
