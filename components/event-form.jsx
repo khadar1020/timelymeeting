@@ -41,13 +41,16 @@ const EventForm = ({ onSubmitForm, initialData = {} }) => {
   const isPaid = watch("isPaid");
 
   const onSubmit = async (data) => {
-    await fnCreateEvent({
+    const event = await fnCreateEvent({
       ...data,
       price: data.isPaid ? Math.round(data.price * 100) : undefined,
       currency: data.currency.toLowerCase(),
     });
-    if (!loading && !error) onSubmitForm();
-    router.refresh(); // Refresh the page to show updated data
+
+    if (event) {
+      onSubmitForm();
+      router.refresh(); // Refresh the page to show updated data
+    }
   };
 
   return (

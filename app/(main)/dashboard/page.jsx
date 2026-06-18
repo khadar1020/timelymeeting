@@ -13,6 +13,7 @@ import useFetch from "@/hooks/use-fetch";
 import { usernameSchema } from "@/app/lib/validators";
 import { getLatestUpdates } from "@/actions/dashboard";
 import { format } from "date-fns";
+import StripeConnectCard from "./_components/stripe-connect-card";
 
 export default function DashboardPage() {
   const { user, isLoaded } = useUser();
@@ -112,6 +113,8 @@ export default function DashboardPage() {
           </form>
         </CardContent>
       </Card>
+
+      <StripeConnectCard />
     </div>
   );
 }

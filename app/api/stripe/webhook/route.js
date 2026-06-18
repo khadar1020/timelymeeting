@@ -4,6 +4,7 @@ import { db } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
 import { createCalendarEvent } from "@/lib/calendar";
 import { hasOverlappingBooking } from "@/lib/bookings";
+import { calculatePayoutAmounts } from "@/lib/stripe-connect";
 
 export async function POST(request) {
   if (!stripe || !process.env.STRIPE_WEBHOOK_SECRET) {
@@ -86,6 +87,9 @@ async function handleCheckoutCompleted(session) {
     event,
     bookingData,
   });
+  const { platformFeeAmount, mentorPayoutAmount } = calculatePayoutAmounts(
+    session.amount_total || event.price
+  );
 
   return db.booking.create({
     data: {
@@ -104,6 +108,9 @@ async function handleCheckoutCompleted(session) {
       amountPaid: session.amount_total,
       currency: session.currency,
       paidAt: new Date(),
+      platformFeeAmount,
+      mentorPayoutAmount,
+      mentorPayoutStatus: "PENDING",
     },
   });
 }

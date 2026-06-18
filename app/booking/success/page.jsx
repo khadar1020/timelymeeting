@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { db } from "@/lib/prisma";
 import ReportBookingIssue from "./_components/report-booking-issue";
+import { createMentorTransferForBooking } from "@/lib/stripe-connect";
 
 export const metadata = {
   title: "Booking Payment Successful | TimelyMeet",
@@ -13,7 +14,7 @@ export default async function BookingSuccessPage({ searchParams }) {
   let booking = sessionId
     ? await db.booking.findUnique({
         where: { stripeSessionId: sessionId },
-        include: { event: true },
+        include: { event: true, user: true },
       })
     : null;
   const now = new Date();
@@ -26,7 +27,7 @@ export default async function BookingSuccessPage({ searchParams }) {
     booking = await db.booking.update({
       where: { id: booking.id },
       data: { status: "AWAITING_CONFIRMATION" },
-      include: { event: true },
+      include: { event: true, user: true },
     });
   }
 
@@ -41,7 +42,12 @@ export default async function BookingSuccessPage({ searchParams }) {
         status: "COMPLETED",
         completedAt: now,
       },
-      include: { event: true },
+      include: { event: true, user: true },
+    });
+
+    await createMentorTransferForBooking({
+      booking,
+      db,
     });
   }
 

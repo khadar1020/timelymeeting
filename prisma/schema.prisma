@@ -20,6 +20,10 @@ model User {
   username     String?  @unique
   name         String?
   imageUrl     String?
+  stripeConnectedAccountId String? @unique
+  stripeChargesEnabled     Boolean @default(false)
+  stripePayoutsEnabled     Boolean @default(false)
+  stripeOnboardingComplete Boolean @default(false)
   events       Event[]  @relation("UserEvents")
   bookings     Booking[] @relation("UserBookings")
   availability Availability?
@@ -62,6 +66,11 @@ model Booking {
   amountPaid     Int?
   currency       String?
   paidAt         DateTime?
+  platformFeeAmount Int?
+  mentorPayoutAmount Int?
+  mentorPayoutStatus MentorPayoutStatus @default(NOT_REQUIRED)
+  stripeTransferId String? @unique
+  transferredAt   DateTime?
   disputedAt     DateTime?
   completedAt    DateTime?
   createdAt      DateTime @default(now())
@@ -109,4 +118,12 @@ enum BookingStatus {
   DISPUTED
   CANCELLED
   REFUNDED
+}
+
+enum MentorPayoutStatus {
+  NOT_REQUIRED
+  PENDING
+  READY
+  PAID
+  FAILED
 }

@@ -28,13 +28,25 @@ export default function MeetingList({ meetings, type }) {
               Status: {meeting.status.replaceAll("_", " ").toLowerCase()}
             </CardDescription>
             {meeting.event.isPaid && (
-              <CardDescription>
-                Paid:{" "}
-                {formatAmount(
-                  meeting.amountPaid || meeting.event.price,
-                  meeting.currency || meeting.event.currency
-                )}
-              </CardDescription>
+              <>
+                <CardDescription>
+                  Paid:{" "}
+                  {formatAmount(
+                    meeting.amountPaid || meeting.event.price,
+                    meeting.currency || meeting.event.currency
+                  )}
+                </CardDescription>
+                <CardDescription>
+                  Mentor payout:{" "}
+                  {meeting.mentorPayoutAmount
+                    ? formatAmount(
+                        meeting.mentorPayoutAmount,
+                        meeting.currency || meeting.event.currency
+                      )
+                    : "Not calculated"}{" "}
+                  ({meeting.mentorPayoutStatus.replaceAll("_", " ").toLowerCase()})
+                </CardDescription>
+              </>
             )}
             <CardDescription>
               &quot;{meeting.additionalInfo}&quot;
@@ -73,9 +85,17 @@ export default function MeetingList({ meetings, type }) {
           )}
           {type === "past" &&
             meeting.event.isPaid &&
-            ["AWAITING_CONFIRMATION", "DISPUTED"].includes(meeting.status) && (
+            (["AWAITING_CONFIRMATION", "DISPUTED"].includes(meeting.status) ||
+              (meeting.status === "COMPLETED" &&
+                ["READY", "FAILED", "PENDING"].includes(
+                  meeting.mentorPayoutStatus
+                ))) && (
               <CardFooter>
-                <MeetingActions meetingId={meeting.id} status={meeting.status} />
+                <MeetingActions
+                  meetingId={meeting.id}
+                  status={meeting.status}
+                  payoutStatus={meeting.mentorPayoutStatus}
+                />
               </CardFooter>
             )}
         </Card>

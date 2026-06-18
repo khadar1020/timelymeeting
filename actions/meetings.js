@@ -3,6 +3,7 @@
 import { db } from "@/lib/prisma";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { google } from "googleapis";
+import { createMentorTransferForBooking } from "@/lib/stripe-connect";
 
 export async function getUserMeetings(type = "upcoming") {
   const { userId } = auth();
@@ -31,18 +32,37 @@ export async function getUserMeetings(type = "upcoming") {
     data: { status: "AWAITING_CONFIRMATION" },
   });
 
-  await db.booking.updateMany({
+  const bookingsToComplete = await db.booking.findMany({
     where: {
       userId: user.id,
       status: "AWAITING_CONFIRMATION",
       endTime: { lt: disputeCutoff },
       event: { isPaid: true },
     },
-    data: {
-      status: "COMPLETED",
-      completedAt: now,
+    include: {
+      event: true,
+      user: true,
     },
   });
+
+  for (const booking of bookingsToComplete) {
+    const completedBooking = await db.booking.update({
+      where: { id: booking.id },
+      data: {
+        status: "COMPLETED",
+        completedAt: now,
+      },
+      include: {
+        event: true,
+        user: true,
+      },
+    });
+
+    await createMentorTransferForBooking({
+      booking: completedBooking,
+      db,
+    });
+  }
 
   const meetings = await db.booking.findMany({
     where: {
@@ -141,6 +161,10 @@ export async function markMeetingCompleted(meetingId) {
 
   const meeting = await db.booking.findUnique({
     where: { id: meetingId },
+    include: {
+      event: true,
+      user: true,
+    },
   });
 
   if (!meeting || meeting.userId !== user.id) {
@@ -151,13 +175,24 @@ export async function markMeetingCompleted(meetingId) {
     throw new Error("Disputed meetings cannot be marked completed");
   }
 
-  await db.booking.update({
+  const completedMeeting = await db.booking.update({
     where: { id: meetingId },
     data: {
       status: "COMPLETED",
       completedAt: new Date(),
     },
+    include: {
+      event: true,
+      user: true,
+    },
   });
+
+  if (completedMeeting.event.isPaid) {
+    await createMentorTransferForBooking({
+      booking: completedMeeting,
+      db,
+    });
+  }
 
   return { success: true };
 }
@@ -220,6 +255,44 @@ export async function markMeetingRefunded(meetingId) {
   await db.booking.update({
     where: { id: meetingId },
     data: { status: "REFUNDED" },
+  });
+
+  return { success: true };
+}
+
+export async function retryMentorPayout(meetingId) {
+  const { userId } = auth();
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+
+  const user = await db.user.findUnique({
+    where: { clerkUserId: userId },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const meeting = await db.booking.findUnique({
+    where: { id: meetingId },
+    include: {
+      event: true,
+      user: true,
+    },
+  });
+
+  if (!meeting || meeting.userId !== user.id) {
+    throw new Error("Meeting not found or unauthorized");
+  }
+
+  if (!meeting.event.isPaid || meeting.status !== "COMPLETED") {
+    throw new Error("Only completed paid meetings can be paid out");
+  }
+
+  await createMentorTransferForBooking({
+    booking: meeting,
+    db,
   });
 
   return { success: true };

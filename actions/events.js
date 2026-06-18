@@ -21,6 +21,15 @@ export async function createEvent(data) {
     throw new Error("User not found");
   }
 
+  if (
+    validatedData.isPaid &&
+    (!user.stripeConnectedAccountId ||
+      !user.stripeOnboardingComplete ||
+      !user.stripePayoutsEnabled)
+  ) {
+    throw new Error("Connect Stripe from the dashboard before creating paid events");
+  }
+
   const event = await db.event.create({
     data: {
       ...validatedData,

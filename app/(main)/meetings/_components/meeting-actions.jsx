@@ -5,11 +5,12 @@ import {
   markMeetingRefunded,
   markMeetingCompleted,
   reportMeetingIssue,
+  retryMentorPayout,
 } from "@/actions/meetings";
 import { useRouter } from "next/navigation";
 import useFetch from "@/hooks/use-fetch";
 
-export default function MeetingActions({ meetingId, status }) {
+export default function MeetingActions({ meetingId, status, payoutStatus }) {
   const router = useRouter();
   const {
     loading: completing,
@@ -26,9 +27,19 @@ export default function MeetingActions({ meetingId, status }) {
     error: refundError,
     fn: fnMarkMeetingRefunded,
   } = useFetch(markMeetingRefunded);
+  const {
+    loading: retryingPayout,
+    error: payoutError,
+    fn: fnRetryMentorPayout,
+  } = useFetch(retryMentorPayout);
 
   const handleComplete = async () => {
     await fnMarkMeetingCompleted(meetingId);
+    router.refresh();
+  };
+
+  const handleRetryPayout = async () => {
+    await fnRetryMentorPayout(meetingId);
     router.refresh();
   };
 
@@ -61,7 +72,7 @@ export default function MeetingActions({ meetingId, status }) {
           type="button"
           onClick={handleComplete}
           disabled={completing || reporting || refunding}
-          className={status === "DISPUTED" ? "hidden" : ""}
+          className={["COMPLETED", "DISPUTED"].includes(status) ? "hidden" : ""}
         >
           {completing ? "Marking..." : "Mark Completed"}
         </Button>
@@ -70,7 +81,7 @@ export default function MeetingActions({ meetingId, status }) {
           variant="outline"
           onClick={handleReportIssue}
           disabled={completing || reporting || refunding}
-          className={status === "DISPUTED" ? "hidden" : ""}
+          className={["COMPLETED", "DISPUTED"].includes(status) ? "hidden" : ""}
         >
           {reporting ? "Reporting..." : "Report Issue"}
         </Button>
@@ -78,16 +89,28 @@ export default function MeetingActions({ meetingId, status }) {
           type="button"
           variant="destructive"
           onClick={handleRefunded}
-          disabled={completing || reporting || refunding}
+          disabled={completing || reporting || refunding || retryingPayout}
         >
           {refunding ? "Updating..." : "Mark Refunded"}
         </Button>
+        {status === "COMPLETED" &&
+          ["READY", "FAILED", "PENDING"].includes(payoutStatus) && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleRetryPayout}
+              disabled={completing || reporting || refunding || retryingPayout}
+            >
+              {retryingPayout ? "Sending..." : "Retry Mentor Payout"}
+            </Button>
+          )}
       </div>
-      {(completeError || reportError || refundError) && (
+      {(completeError || reportError || refundError || payoutError) && (
         <p className="text-sm text-red-500">
           {completeError?.message ||
             reportError?.message ||
-            refundError?.message}
+            refundError?.message ||
+            payoutError?.message}
         </p>
       )}
     </div>

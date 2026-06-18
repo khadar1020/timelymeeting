@@ -33,7 +33,7 @@ TimelyMeet is a responsive web application designed to streamline scheduling and
 - **Authentication**: Clerk
 - **Calendar Integration**: Google Calendar API
 - **Database**: Prisma (for database interaction)
-- **Payments**: Stripe Checkout and Stripe webhooks
+- **Payments**: Stripe Checkout, Stripe webhooks, and Stripe Connect payouts
 
 ---
 
@@ -74,7 +74,10 @@ Paid bookings use Stripe Checkout. The app does not store card details and does 
 ### **Payment Notes**
 
 - Stripe money goes to the platform Stripe account.
-- Stripe Connect and automatic mentor payouts are not implemented in this version.
+- Mentors connect a Stripe Express account from the dashboard before creating paid events.
+- TimelyMeet stores the platform fee and mentor payout amount when a paid booking is confirmed.
+- After a paid meeting is completed, TimelyMeet creates an idempotent Stripe transfer to the mentor's connected account.
+- `STRIPE_PLATFORM_FEE_PERCENT` controls the platform commission. If it is not set, TimelyMeet uses 10%.
 - Refunds are manual in Stripe Dashboard.
 - After a manual refund, the booking can be marked `REFUNDED` in TimelyMeet.
 - Student issue reporting is available from the paid booking success link during the 24-hour post-meeting window.
@@ -103,6 +106,7 @@ CLERK_SECRET_KEY=
 STRIPE_SECRET_KEY=
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
 STRIPE_WEBHOOK_SECRET=
+STRIPE_PLATFORM_FEE_PERCENT=10
 NEXT_PUBLIC_APP_URL=https://timelymeet.vercel.app
 ```
 
